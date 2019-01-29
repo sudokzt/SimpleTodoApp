@@ -1,0 +1,112 @@
+@charset "UTF-8";
+
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700);
+@import url(http://fonts.googleapis.com/earlyaccess/notosansjp.css);
+
+
+/* --------------------------------
+ * base
+ * -------------------------------- */
+html {
+  font-size: 62.5%;
+}
+body {
+  color: #333;
+  font-size: 1.2rem;
+   font-family: Lato, "Noto Sans JP", "游ゴシック Medium", "游ゴシック体", "Yu Gothic Medium", YuGothic, "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+  text-align: center;
+}
+@media (max-width: 1080px) {
+  .history {
+    margin-bottom: 50px;
+  }
+}
+*, *::before, *::after {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.clearfix::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+.partition {
+  border-width: 0 0 1px;
+  -o-border-image: linear-gradient(
+    90deg,
+    hsla(0, 0%, 100%, 0),
+    hsla(0, 0%, 0%, 0.5) 50%,
+    hsla(0, 0%, 100%, 0) 100%) 0 0 100%;
+     border-image: -webkit-gradient(
+    linear,
+    left top, right top,
+    from(hsla(0, 0%, 100%, 0)),
+    color-stop(50%, hsla(0, 0%, 0%, 0.5)),
+    to(hsla(0, 0%, 100%, 0))) 0 0 100%;
+     border-image: linear-gradient(
+    90deg,
+    hsla(0, 0%, 100%, 0),
+    hsla(0, 0%, 0%, 0.5) 50%,
+    hsla(0, 0%, 100%, 0) 100%) 0 0 100%;
+  border-style: solid;
+}
+
+/* ヘッダー */
+.header {
+  /* アプリカン のやつあるかも？ */
+}
+
+.progress_time {
+  margin: 10% 0;
+}
+.progress_time time {
+  font-size: 3rem;
+  text-decoration: underline;
+}
+
+/* 各ボタン */
+.todo_category {
+  margin: 0 15%;
+}
+ul {
+    display: -webkit-flex;
+    display: flex;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    padding: 2.5% 0;
+}
+ul li {
+  list-style: none;
+  margin: 10px 0;
+}
+.adjust-box {
+    position: relative;
+    width: 40%;
+    height: auto;
+    background-color: #ccc;
+    border-radius: 8px;
+}
+.box-1x2:before {
+    content: "";
+    display: block;
+    padding-top: 35%;
+}
+.inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+}
+.adjust-box p {
+    font-size: 1.5em;
+    letter-spacing: 1px;
+}
