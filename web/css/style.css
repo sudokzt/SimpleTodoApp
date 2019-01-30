@@ -51,11 +51,44 @@ body {
   border-style: solid;
 }
 
-/* ヘッダー */
-.header {
-  /* アプリカン のやつあるかも？ */
+/**-----------------------------------------------
+ヘッダー
+-----------------------------------------------**/
+#header {
+	position:fixed;
+	top:0;
+	left:0;
+	z-index:999;
+	width:100%;
+	height:auto;
+	line-height:4em;
+	background-color:#8000f0;
+	box-shadow:0px -1px 4px 0px #666;
+}
+#header h1 {
+	color:#FFF;
+	font-size: 1.7em;
+}
+#header .button {
+  position:absolute;
+  top: 10%;
+}
+#header .right_button {
+  right:5%;
+}
+#header .left_button {
+  left:5%;
+}
+#header i {
+  border:none;
+	height:100%;
+	color:#EEE;
 }
 
+/* メインメニュー */
+.main {
+  margin-top: 15vh;
+}
 .progress_time {
   margin: 10% 0;
 }
