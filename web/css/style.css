@@ -92,8 +92,9 @@ body {
 .progress_time {
   margin: 10% 0;
 }
-.progress_time time {
-  font-size: 3rem;
+#elapsed_time {
+  letter-spacing: calc(0.2em + 1px);
+  font-size: 3em;
   text-decoration: underline;
 }
 
@@ -125,7 +126,7 @@ ul li {
     border: 1px solid #ccc;
     transition: all 0.15s;
 }
-.adjust-box:hover {
+.slect_category {
     background-color: #f37777;
     transform: scale(1.2);
 }
@@ -148,4 +149,10 @@ ul li {
 .adjust-box p {
     font-size: 1.5em;
     letter-spacing: 1px;
+}
+
+#dumpAreaDatabase {
+  width: 100px;
+  height: 100px;
+  background-color: #ccc;
 }
