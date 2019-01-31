@@ -10,10 +10,31 @@ toHomeScreen = function () {
 
 // ホーム画面ロード時
 document.addEventListener('DOMContentLoaded', function () {
-  let time_obj = document.getElementById('elapsed_time');
-  time_obj.textContent = "00:00:00";
+  let timeObj = document.getElementById('elapsed_time');
+  timeObj.textContent = "00:00:00";
 });
 
+// ボタンを表示
+printButton = function (categories) {
+  const cnt = categories.rows.length; // カテゴリー数
+  let id, name;
+  for (let i = 0; i < cnt; i++) {
+    id = categories.rows[i].id;
+    name = categories.rows[i].name;
+    createButton(id, name);
+  }
+}
+// ボタンを作成
+createButton = function (id, name) {
+  const buttonObj = `
+      <li class="adjust-box box-1x2" id="button_${id}" ontouchstart="">
+        <div class="inner">
+          <p>${name}</p>
+        </div>
+      </li>`
+  let todoParentObj = document.querySelector('.todo_category ul');
+  todoParentObj.innerHTML += buttonObj;
+}
 
 // function dateToTime(date, format) {
 
