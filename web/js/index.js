@@ -1,7 +1,16 @@
 toGraphScreen = function () {
+  //(UPDATE) 最新の記録レコードを終了するSQL
+  if (prevSelectedButton !== null) {
+
+  }
   location.href = './graph.html';
+
 }
 toEditScreen = function () {
+  //(UPDATE) 最新の記録レコードを終了するSQL
+  if (prevSelectedButton !== null) {
+
+  }
   location.href = './edit.html';
 }
 toHomeScreen = function () {
@@ -61,6 +70,7 @@ selectedButton = function (id) {
 }
 // タイマー初期化
 resetTimer = function () {
+  clearInterval(timer);
   let timeObj = document.getElementById('elapsed_time');
   timeObj.textContent = "00:00:00";
   if (prevSelectedButton !== null) {
@@ -68,8 +78,24 @@ resetTimer = function () {
   }
 }
 // タイマー起動
+let timer;
 startTimer = function () {
-
+  const DAYSTART = new Date();
+  const DAYEND = new Date();
+  const INTERVAL = 1000;
+  let calc = new Date(+DAYEND - DAYSTART - INTERVAL);
+  function counUpTimer() {
+    const addZero = function (n) { return ('0' + n).slice(-2); }
+    calc = new Date(+new Date(calc) + INTERVAL);
+    let date = calc.getUTCDate() + 1 ? calc.getUTCDate() + 1 : '';
+    let dateToHours = date * 24; // 日付を時間に変換
+    let hours = calc.getUTCHours() ? calc.getUTCHours() + dateToHours + ':' : '00:';
+    let minutes = addZero(calc.getUTCMinutes()) + ':';
+    let seconds = addZero(calc.getUTCSeconds());
+    document.getElementById('elapsed_time').textContent = hours + minutes + seconds;
+  }
+  counUpTimer();
+  timer = setInterval(function () { counUpTimer() }, INTERVAL);
 }
 
 // function dateToTime(date, format) {
