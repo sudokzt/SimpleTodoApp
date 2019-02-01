@@ -1,20 +1,16 @@
 toGraphScreen = function () {
   //(UPDATE) 最新の記録レコードを終了するSQL
   if (prevSelectedButton !== null) {
-
+    finishRecordWork();
   }
   location.href = './graph.html';
-
 }
 toEditScreen = function () {
   //(UPDATE) 最新の記録レコードを終了するSQL
   if (prevSelectedButton !== null) {
-
+    finishRecordWork();
   }
   location.href = './edit.html';
-}
-toHomeScreen = function () {
-  location.href = './index.html';
 }
 
 // ホーム画面ロード時
@@ -39,14 +35,13 @@ createButton = function (id, name) {
         <div class="inner">
           <p>${name}</p>
         </div>
-      </li>`
+      </li>`;
   let todoParentObj = document.querySelector('.todo_category ul');
   todoParentObj.innerHTML += buttonObj;
 }
 // ボタン選択
 prevSelectedButton = null;
 selectedButton = function (id) {
-  getAllWorkRecords();
   if (prevSelectedButton === null) {
     // (INSERT) 選択したボタンをレコードとして登録するSQL
     startRecordWork(id);

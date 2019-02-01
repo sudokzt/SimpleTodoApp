@@ -5,9 +5,16 @@ DB_NAME = 'selfManagement'; // DB名
 connectDatabase = function () {
   applican.database.open(DB_NAME, openDb_success, openDb_error);
 }
+connectDatabase2 = function () {
+  applican.database.open(DB_NAME, openDbOnGraph_success, openDb_error);
+}
 openDb_success = function (db_obj) {
   db = db_obj;
   is_CreatedTable();
+}
+openDbOnGraph_success = function (db_obj) {
+  db = db_obj;
+  getAllWorkRecords();
 }
 openDb_error = function (error) {
   alert(
@@ -29,12 +36,12 @@ isExistedTableSuccess = function (result) {
     initializeCreateTable();
   } else {
     // テーブルがある場合
-    getAllCategories();
+    getAllCategories("home");
   }
 }
-isExistedTableError = function (result) {
+isExistedTableError = function (error) {
   alert('ERROR!');
-  alert(result.rows[0]);
+  alert(error.message);
 }
 
 // データベースを開いているかのチェック
@@ -62,6 +69,7 @@ initializeCreateTable = function () {
     "INSERT INTO categories (name) VALUES ('食事')",
     "INSERT INTO categories (name) VALUES ('風呂')",
     "INSERT INTO categories (name) VALUES ('遊び')",
+    "INSERT INTO categories (name) VALUES ('仕事')",
 
     // workd_recordsテーブル
     "CREATE TABLE IF NOT EXISTS works_records (id INTEGER PRIMARY KEY, categories_id int(11) NOT NULL, started_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), finished_at DATETIME, edited int(1) DEFAULT '0', validated INT(1) NOT NULL DEFAULT '1',FOREIGN KEY(categories_id) REFERENCES categories(id))"
@@ -74,7 +82,7 @@ initializeCreateTable = function () {
  * 	rowsAffected : Number		データ操作件数（INSERT,UPDATE,DELETE時）
  */
 execTransactionSuccess = function (result) {
-  getAllCategories();
+  getAllCategories("home");
 }
 /*
  * 一括処理実行失敗時のcallback処理
@@ -87,23 +95,16 @@ execTransactionError = function (error) {
 
 /* カテゴリー検索　*/
 // 全カテゴリーデータ
-getAllCategories = function () {
+getAllCategories = function (tag) {
   if (!is_OpenedDB()) return;
   const sql = "SELECT * FROM categories WHERE validated = 1";
-  db.query(sql, searchDataSuccess, searchDataError);
+  if (tag === "home") db.query(sql, searchDataSuccess, searchDataError); // 遷移元がホーム時はボタンを出力
+  // else {
+  //   db.query(sql, searchDataSuccess2, searchDataError); // 遷移元がグラフ時はグラフを出力
+  // }
 }
-// 特定のカテゴリーデータ　(使用する？)
-// getOneCategory = function (category_id) {
-//   if (!is_OpenedDB()) return;
-//   const sql = `SELECT * FROM categories WHERE id = ${category_id} validated = 1`;
-//   db.query(sql, searchDataSuccess, searchDataError);
-// }
-/*
- * データ検索成功時のcallback処理
- * 	insertId					データベースに挿入された行の行番号
- * 	rowsAffected : Number		データ操作件数（INSERT,UPDATE,DELETE時）
- * 	rows         : DatabaseResultRow[]	データ検索結果（SELECT時）
- */
+
+/* カテゴリー検索 */
 searchDataSuccess = function (result) {
   let dump = "データ検索成功しました。\n";
   let cnt = result.rows.length;
@@ -114,6 +115,29 @@ searchDataSuccess = function (result) {
   alert(dump);
   printButton(result);
 }
+/* 作業レコード検索　*/
+// term は 今日から何日前までかの期間
+getAllWorkRecords = function (term = DAYLY) {
+  if (!is_OpenedDB()) return;
+  alert(term);
+  let sql;
+  switch (term) {
+    case DAYLY:
+      sql = "SELECT * FROM works_records WHERE validated = 1";
+      break;
+    case WEEKLY:
+      sql = "SELECT * FROM works_records WHERE validated = 1";
+      break;
+    case MONTHLY:
+      sql = "SELECT * FROM works_records WHERE validated = 1";
+      break;
+    default:
+      alert("error!");
+      break;
+  }
+  alert(sql);
+  db.query(sql, searchDataSuccess2, searchDataError);
+}
 searchDataSuccess2 = function (result) {
   let dump = "データ検索成功しました。\n";
   let cnt = result.rows.length;
@@ -121,6 +145,8 @@ searchDataSuccess2 = function (result) {
   for (let i = 0; i < cnt; i++) {
     dump += "id:" + result.rows[i].id + ", start:" + result.rows[i].started_at + ", finish:" + result.rows[i].finished_at + ", category:" + result.rows[i].categories_id + "\n";
   }
+  alert(dump);
+  printGraph(result);
 }
 /* データ検索失敗時のcallback処理 */
 searchDataError = function (error) {
@@ -128,14 +154,6 @@ searchDataError = function (error) {
   dump += error.message + "\n";
 }
 
-/* 作業レコード検索　*/
-// term は 今日から何日前までかの期間
-getAllWorkRecords = function (term = 1) {
-  if (!is_OpenedDB()) return;
-  // const sql = "SELECT * FROM works_records WHERE validated = 1 WHEHRE started_at ......";
-  const sql = "SELECT * FROM works_records WHERE validated = 1 ";
-  db.query(sql, searchDataSuccess2, searchDataError);
-}
 
 /* 作業レコード記録 */
 startRecordWork = function (id) {

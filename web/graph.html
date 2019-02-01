@@ -6,8 +6,8 @@
   <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
-  <script src="js/applican.js"></script>
-  <script src="js/index.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
   <title>自己管理App</title>
 </head>
 <body>
@@ -19,11 +19,16 @@
   </header>
   <main class="main">
     <section id="span_select">
-      期間選択
+      <input type="button" value="日" onclick="selectedTerm(1)">
+      <input type="button" value="週" onclick="selectedTerm(2)">
+      <input type="button" value="月" onclick="selectedTerm(3)">
     </section>
-    <section id="graph_area">
-      グラフを貼る
-    </section>
+    <div>
+      <canvas id="graph_area" width="400" height="400"></canvas>
+    </div>
   </main>
+  <script src="js/applican.js"></script>
+  <script src="js/graph.js"></script>
+  <script src="js/initialize.js"></script>
 </body>
 </html>
