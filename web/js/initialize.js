@@ -74,9 +74,6 @@ initializeCreateTable = function () {
  * 	rowsAffected : Number		データ操作件数（INSERT,UPDATE,DELETE時）
  */
 execTransactionSuccess = function (result) {
-  const dump = `SQL一括実行しました。
-  rowsAffected: ${result.rowsAffected}
-  insertId: ${result.insertId}`;
   getAllCategories();
 }
 /*
@@ -114,7 +111,16 @@ searchDataSuccess = function (result) {
   for (let i = 0; i < cnt; i++) {
     dump += "id:" + result.rows[i].id + ", data:" + result.rows[i].name + ", data2:" + result.rows[i].created_at + ", data3:" + result.rows[i].validated + "\n";
   }
+  alert(dump);
   printButton(result);
+}
+searchDataSuccess2 = function (result) {
+  let dump = "データ検索成功しました。\n";
+  let cnt = result.rows.length;
+  dump += "行数:" + cnt + "\n";
+  for (let i = 0; i < cnt; i++) {
+    dump += "id:" + result.rows[i].id + ", start:" + result.rows[i].started_at + ", finish:" + result.rows[i].finished_at + ", category:" + result.rows[i].categories_id + "\n";
+  }
 }
 /* データ検索失敗時のcallback処理 */
 searchDataError = function (error) {
@@ -124,8 +130,23 @@ searchDataError = function (error) {
 
 /* 作業レコード検索　*/
 // term は 今日から何日前までかの期間
-// getAllWorkRecords = function (term = 1) {
-//   if (!is_OpenedDB()) return;
-//   const sql = "SELECT * FROM works_records WHERE validated = 1 WHEHRE started_at ......";
-//   db.query(sql, searchDataSuccess, searchDataError);
-// }
+getAllWorkRecords = function (term = 1) {
+  if (!is_OpenedDB()) return;
+  // const sql = "SELECT * FROM works_records WHERE validated = 1 WHEHRE started_at ......";
+  const sql = "SELECT * FROM works_records WHERE validated = 1 ";
+  db.query(sql, searchDataSuccess2, searchDataError);
+}
+
+/* 作業レコード記録 */
+startRecordWork = function (id) {
+  const sql = `INSERT INTO works_records (categories_id) VALUES(${id})`;
+  db.query(sql, RecordWorkSuccess, RecordWorkError);
+}
+finishRecordWork = function () {
+  const sql = `UPDATE works_records SET finished_at = CURRENT_TIMESTAMP ORDER BY id DESC LIMIT 1`;
+  db.query(sql, RecordWorkSuccess, RecordWorkError);
+}
+RecordWorkSuccess = function (result) {
+}
+RecordWorkError = function (error) {
+}

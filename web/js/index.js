@@ -46,19 +46,24 @@ createButton = function (id, name) {
 // ボタン選択
 prevSelectedButton = null;
 selectedButton = function (id) {
+  getAllWorkRecords();
   if (prevSelectedButton === null) {
     // (INSERT) 選択したボタンをレコードとして登録するSQL
+    startRecordWork(id);
     // 選択したボタンに色クラスを加える
     document.getElementById(`button_${id}`).classList.add('slect_category');
     prevSelectedButton = id;
   } else if (prevSelectedButton === id) { // 同じボタンをクリックした場合は終了
     //(UPDATE) 最新の記録レコードを終了するSQL
+    finishRecordWork();
     // 選択していたボタンから色クラスを外す
     document.getElementById(`button_${prevSelectedButton}`).classList.remove('slect_category');
     prevSelectedButton = null;
   } else {
     //(UPDATE) 最新の記録レコードを終了するSQL
+    finishRecordWork();
     // (INSERT) 選択したボタンをレコードとして登録するSQL
+    startRecordWork(id);
     // 選択していたボタンから色クラスを外す
     document.getElementById(`button_${prevSelectedButton}`).classList.remove('slect_category');
     // 選択したボタンに色クラスを加える
