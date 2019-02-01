@@ -72,7 +72,7 @@ initializeCreateTable = function () {
     "INSERT INTO categories (name) VALUES ('仕事')",
 
     // workd_recordsテーブル
-    "CREATE TABLE IF NOT EXISTS works_records (id INTEGER PRIMARY KEY, categories_id int(11) NOT NULL, started_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), finished_at DATETIME, edited int(1) DEFAULT '0', validated INT(1) NOT NULL DEFAULT '1',FOREIGN KEY(categories_id) REFERENCES categories(id))"
+    "CREATE TABLE IF NOT EXISTS works_records (id INTEGER PRIMARY KEY, categories_id int(11) NOT NULL, started_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), finished_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), edited int(1) DEFAULT '0', validated INT(1) NOT NULL DEFAULT '1',FOREIGN KEY(categories_id) REFERENCES categories(id))"
   ];
   db.execTransaction(sqls, execTransactionSuccess, execTransactionError);
 }
@@ -112,18 +112,18 @@ searchDataSuccess = function (result) {
   for (let i = 0; i < cnt; i++) {
     dump += "id:" + result.rows[i].id + ", data:" + result.rows[i].name + ", data2:" + result.rows[i].created_at + ", data3:" + result.rows[i].validated + "\n";
   }
-  alert(dump);
+  // alert(dump);
   printButton(result);
 }
 /* 作業レコード検索　*/
 // term は 今日から何日前までかの期間
 getAllWorkRecords = function (term = DAYLY) {
   if (!is_OpenedDB()) return;
-  alert(term);
+  // alert(term);
   let sql;
   switch (term) {
     case DAYLY:
-      sql = "SELECT * FROM works_records WHERE validated = 1";
+      sql = `SELECT WR.categories_id, C.id, C.name AS name, C.validated AS v1, WR.validated AS v2, SUM(strftime('%s', WR.finished_at) - strftime('%s', WR.started_at)) AS elapsed_time FROM works_records AS WR INNER JOIN categories AS C ON WR.categories_id = C.id WHERE v1 = 1 AND v2 = 1 GROUP BY WR.categories_id`;
       break;
     case WEEKLY:
       sql = "SELECT * FROM works_records WHERE validated = 1";
@@ -135,17 +135,10 @@ getAllWorkRecords = function (term = DAYLY) {
       alert("error!");
       break;
   }
-  alert(sql);
+  // alert(sql);
   db.query(sql, searchDataSuccess2, searchDataError);
 }
 searchDataSuccess2 = function (result) {
-  let dump = "データ検索成功しました。\n";
-  let cnt = result.rows.length;
-  dump += "行数:" + cnt + "\n";
-  for (let i = 0; i < cnt; i++) {
-    dump += "id:" + result.rows[i].id + ", start:" + result.rows[i].started_at + ", finish:" + result.rows[i].finished_at + ", category:" + result.rows[i].categories_id + "\n";
-  }
-  alert(dump);
   printGraph(result);
 }
 /* データ検索失敗時のcallback処理 */
@@ -160,9 +153,25 @@ startRecordWork = function (id) {
   const sql = `INSERT INTO works_records (categories_id) VALUES(${id})`;
   db.query(sql, RecordWorkSuccess, RecordWorkError);
 }
-finishRecordWork = function () {
-  const sql = `UPDATE works_records SET finished_at = CURRENT_TIMESTAMP ORDER BY id DESC LIMIT 1`;
-  db.query(sql, RecordWorkSuccess, RecordWorkError);
+finishRecordWork = function (type = "click") {
+  const sql = `UPDATE works_records SET finished_at = (DATETIME('now','localtime')) ORDER BY id DESC LIMIT 1`;
+  switch (type) {
+    case "graph":
+      db.query(sql, RecordWorkMoveGraphSuccess, RecordWorkError);
+      break;
+    case "edit":
+      db.query(sql, RecordWorkMoveEditSuccess, RecordWorkError);
+      break;
+    default:
+      db.query(sql, RecordWorkSuccess, RecordWorkError);
+      break;
+  }
+}
+RecordWorkMoveGraphSuccess = function () {
+  location.href = './graph.html';
+}
+RecordWorkMoveEditSuccess = function () {
+  location.href = './edit.html';
 }
 RecordWorkSuccess = function (result) {
 }

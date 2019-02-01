@@ -1,16 +1,18 @@
 toGraphScreen = function () {
   //(UPDATE) 最新の記録レコードを終了するSQL
   if (prevSelectedButton !== null) {
-    finishRecordWork();
+    finishRecordWork("graph");
+  } else {
+    location.href = './graph.html';
   }
-  location.href = './graph.html';
 }
 toEditScreen = function () {
   //(UPDATE) 最新の記録レコードを終了するSQL
   if (prevSelectedButton !== null) {
-    finishRecordWork();
+    finishRecordWork("edit");
+  } else {
+    location.href = './edit.html';
   }
-  location.href = './edit.html';
 }
 
 // ホーム画面ロード時
