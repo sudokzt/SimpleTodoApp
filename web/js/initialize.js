@@ -5,21 +5,43 @@ DB_NAME = 'selfManagement'; // DB名
 connectDatabase = function () {
   applican.database.open(DB_NAME, openDb_success, openDb_error);
 }
+connectDatabase2 = function () {
+  applican.database.open(DB_NAME, openDbOnGraph_success, openDb_error);
+}
 openDb_success = function (db_obj) {
   db = db_obj;
-  // テーブルがあるか無いかで初回起動時かどうかを判断する
-  if (1) {
-    // テーブルがない場合
-    initializeCreateTable();
-  } else {
-    // テーブルがある場合
-  }
+  is_CreatedTable();
+}
+openDbOnGraph_success = function (db_obj) {
+  db = db_obj;
+  getAllWorkRecords();
 }
 openDb_error = function (error) {
   alert(
     `Open Error!
     ${error}`
   )
+}
+
+// テーブルがあるかのチェック (=アプリ初期起動時かどうか)
+is_CreatedTable = function () {
+  if (!is_OpenedDB()) return;
+  const sql = "select count(*) AS cnt from sqlite_master where type='table' and name='categories'";
+  db.query(sql, isExistedTableSuccess, isExistedTableError);
+}
+isExistedTableSuccess = function (result) {
+  initialOpen = result.rows[0].cnt;
+  if (initialOpen === 0) {
+    // テーブルがない場合 初期カテゴリーを作成して表示
+    initializeCreateTable();
+  } else {
+    // テーブルがある場合
+    getAllCategories("home");
+  }
+}
+isExistedTableError = function (error) {
+  alert('ERROR!');
+  alert(error.message);
 }
 
 // データベースを開いているかのチェック
@@ -47,9 +69,10 @@ initializeCreateTable = function () {
     "INSERT INTO categories (name) VALUES ('食事')",
     "INSERT INTO categories (name) VALUES ('風呂')",
     "INSERT INTO categories (name) VALUES ('遊び')",
+    "INSERT INTO categories (name) VALUES ('仕事')",
 
     // workd_recordsテーブル
-    "CREATE TABLE IF NOT EXISTS works_records (id INTEGER PRIMARY KEY, categories_id int(11) NOT NULL, started_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), finished_at DATETIME, edited int(1) DEFAULT '0', validated INT(1) NOT NULL DEFAULT '1',FOREIGN KEY(categories_id) REFERENCES categories(id))"
+    "CREATE TABLE IF NOT EXISTS works_records (id INTEGER PRIMARY KEY, categories_id int(11) NOT NULL, started_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), finished_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), edited int(1) DEFAULT '0', validated INT(1) NOT NULL DEFAULT '1',FOREIGN KEY(categories_id) REFERENCES categories(id))"
   ];
   db.execTransaction(sqls, execTransactionSuccess, execTransactionError);
 }
@@ -59,10 +82,7 @@ initializeCreateTable = function () {
  * 	rowsAffected : Number		データ操作件数（INSERT,UPDATE,DELETE時）
  */
 execTransactionSuccess = function (result) {
-  const dump = `SQL一括実行しました。
-  rowsAffected: ${result.rowsAffected}
-  insertId: ${result.insertId}`;
-  getAllCategories();
+  getAllCategories("home");
 }
 /*
  * 一括処理実行失敗時のcallback処理
@@ -75,23 +95,16 @@ execTransactionError = function (error) {
 
 /* カテゴリー検索　*/
 // 全カテゴリーデータ
-getAllCategories = function () {
+getAllCategories = function (tag) {
   if (!is_OpenedDB()) return;
   const sql = "SELECT * FROM categories WHERE validated = 1";
-  db.query(sql, searchDataSuccess, searchDataError);
+  if (tag === "home") db.query(sql, searchDataSuccess, searchDataError); // 遷移元がホーム時はボタンを出力
+  // else {
+  //   db.query(sql, searchDataSuccess2, searchDataError); // 遷移元がグラフ時はグラフを出力
+  // }
 }
-// 特定のカテゴリーデータ　(使用する？)
-// getOneCategory = function (category_id) {
-//   if (!is_OpenedDB()) return;
-//   const sql = `SELECT * FROM categories WHERE id = ${category_id} validated = 1`;
-//   db.query(sql, searchDataSuccess, searchDataError);
-// }
-/*
- * データ検索成功時のcallback処理
- * 	insertId					データベースに挿入された行の行番号
- * 	rowsAffected : Number		データ操作件数（INSERT,UPDATE,DELETE時）
- * 	rows         : DatabaseResultRow[]	データ検索結果（SELECT時）
- */
+
+/* カテゴリー検索 */
 searchDataSuccess = function (result) {
   let dump = "データ検索成功しました。\n";
   let cnt = result.rows.length;
@@ -99,7 +112,34 @@ searchDataSuccess = function (result) {
   for (let i = 0; i < cnt; i++) {
     dump += "id:" + result.rows[i].id + ", data:" + result.rows[i].name + ", data2:" + result.rows[i].created_at + ", data3:" + result.rows[i].validated + "\n";
   }
+  // alert(dump);
   printButton(result);
+}
+/* 作業レコード検索　*/
+// term は 今日から何日前までかの期間
+getAllWorkRecords = function (term = DAYLY) {
+  if (!is_OpenedDB()) return;
+  // alert(term);
+  let sql;
+  switch (term) {
+    case DAYLY:
+      sql = `SELECT WR.categories_id, C.id, C.name AS name, C.validated AS v1, WR.validated AS v2, SUM(strftime('%s', WR.finished_at) - strftime('%s', WR.started_at)) AS elapsed_time FROM works_records AS WR INNER JOIN categories AS C ON WR.categories_id = C.id WHERE v1 = 1 AND v2 = 1 GROUP BY WR.categories_id`;
+      break;
+    case WEEKLY:
+      sql = "SELECT * FROM works_records WHERE validated = 1";
+      break;
+    case MONTHLY:
+      sql = "SELECT * FROM works_records WHERE validated = 1";
+      break;
+    default:
+      alert("error!");
+      break;
+  }
+  // alert(sql);
+  db.query(sql, searchDataSuccess2, searchDataError);
+}
+searchDataSuccess2 = function (result) {
+  printGraph(result);
 }
 /* データ検索失敗時のcallback処理 */
 searchDataError = function (error) {
@@ -107,10 +147,33 @@ searchDataError = function (error) {
   dump += error.message + "\n";
 }
 
-/* 作業レコード検索　*/
-// term は 今日から何日前までかの期間
-// getAllWorkRecords = function (term = 1) {
-//   if (!is_OpenedDB()) return;
-//   const sql = "SELECT * FROM works_records WHERE validated = 1 WHEHRE started_at ......";
-//   db.query(sql, searchDataSuccess, searchDataError);
-// }
+
+/* 作業レコード記録 */
+startRecordWork = function (id) {
+  const sql = `INSERT INTO works_records (categories_id) VALUES(${id})`;
+  db.query(sql, RecordWorkSuccess, RecordWorkError);
+}
+finishRecordWork = function (type = "click") {
+  const sql = `UPDATE works_records SET finished_at = (DATETIME('now','localtime')) ORDER BY id DESC LIMIT 1`;
+  switch (type) {
+    case "graph":
+      db.query(sql, RecordWorkMoveGraphSuccess, RecordWorkError);
+      break;
+    case "edit":
+      db.query(sql, RecordWorkMoveEditSuccess, RecordWorkError);
+      break;
+    default:
+      db.query(sql, RecordWorkSuccess, RecordWorkError);
+      break;
+  }
+}
+RecordWorkMoveGraphSuccess = function () {
+  location.href = './graph.html';
+}
+RecordWorkMoveEditSuccess = function () {
+  location.href = './edit.html';
+}
+RecordWorkSuccess = function (result) {
+}
+RecordWorkError = function (error) {
+}

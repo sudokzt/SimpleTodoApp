@@ -1,20 +1,18 @@
 toGraphScreen = function () {
   //(UPDATE) 最新の記録レコードを終了するSQL
   if (prevSelectedButton !== null) {
-
+    finishRecordWork("graph");
+  } else {
+    location.href = './graph.html';
   }
-  location.href = './graph.html';
-
 }
 toEditScreen = function () {
   //(UPDATE) 最新の記録レコードを終了するSQL
   if (prevSelectedButton !== null) {
-
+    finishRecordWork("edit");
+  } else {
+    location.href = './edit.html';
   }
-  location.href = './edit.html';
-}
-toHomeScreen = function () {
-  location.href = './index.html';
 }
 
 // ホーム画面ロード時
@@ -39,7 +37,7 @@ createButton = function (id, name) {
         <div class="inner">
           <p>${name}</p>
         </div>
-      </li>`
+      </li>`;
   let todoParentObj = document.querySelector('.todo_category ul');
   todoParentObj.innerHTML += buttonObj;
 }
@@ -48,17 +46,21 @@ prevSelectedButton = null;
 selectedButton = function (id) {
   if (prevSelectedButton === null) {
     // (INSERT) 選択したボタンをレコードとして登録するSQL
+    startRecordWork(id);
     // 選択したボタンに色クラスを加える
     document.getElementById(`button_${id}`).classList.add('slect_category');
     prevSelectedButton = id;
   } else if (prevSelectedButton === id) { // 同じボタンをクリックした場合は終了
     //(UPDATE) 最新の記録レコードを終了するSQL
+    finishRecordWork();
     // 選択していたボタンから色クラスを外す
     document.getElementById(`button_${prevSelectedButton}`).classList.remove('slect_category');
     prevSelectedButton = null;
   } else {
     //(UPDATE) 最新の記録レコードを終了するSQL
+    finishRecordWork();
     // (INSERT) 選択したボタンをレコードとして登録するSQL
+    startRecordWork(id);
     // 選択していたボタンから色クラスを外す
     document.getElementById(`button_${prevSelectedButton}`).classList.remove('slect_category');
     // 選択したボタンに色クラスを加える
