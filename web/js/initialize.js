@@ -7,19 +7,34 @@ connectDatabase = function () {
 }
 openDb_success = function (db_obj) {
   db = db_obj;
-  // テーブルがあるか無いかで初回起動時かどうかを判断する
-  if (1) {
-    // テーブルがない場合
-    initializeCreateTable();
-  } else {
-    // テーブルがある場合
-  }
+  is_CreatedTable();
 }
 openDb_error = function (error) {
   alert(
     `Open Error!
     ${error}`
   )
+}
+
+// テーブルがあるかのチェック (=アプリ初期起動時かどうか)
+is_CreatedTable = function () {
+  if (!is_OpenedDB()) return;
+  const sql = "select count(*) AS cnt from sqlite_master where type='table' and name='categories'";
+  db.query(sql, isExistedTableSuccess, isExistedTableError);
+}
+isExistedTableSuccess = function (result) {
+  initialOpen = result.rows[0].cnt;
+  if (initialOpen === 0) {
+    // テーブルがない場合 初期カテゴリーを作成して表示
+    initializeCreateTable();
+  } else {
+    // テーブルがある場合
+    getAllCategories();
+  }
+}
+isExistedTableError = function (result) {
+  alert('ERROR!');
+  alert(result.rows[0]);
 }
 
 // データベースを開いているかのチェック
