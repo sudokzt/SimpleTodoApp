@@ -8,10 +8,16 @@ toGraphScreen = function () {
 }
 toEditScreen = function () {
   //(UPDATE) 最新の記録レコードを終了するSQL
+  let allButton = document.getElementsByClassName("inner");
+  alert(allButton[0]);
+  alert(allButton[0].className);
+  alert(allButton.length);
+  for (let i = 0; i < allButton.length; i++) {
+    allButton[i].classList.toggle("button_toggle");
+    // allButton[i].classList.toggle("button_toggle::before");
+  }
   if (prevSelectedButton !== null) {
     finishRecordWork("edit");
-  } else {
-    location.href = './edit.html';
   }
 }
 

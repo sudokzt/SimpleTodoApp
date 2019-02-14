@@ -84,3 +84,7 @@ hr {
 input, select {
     vertical-align:middle;
 }
+.chartjs-render-monitor {
+    animation: 0ms;
+    -webkit-animation: 0ms;
+}
