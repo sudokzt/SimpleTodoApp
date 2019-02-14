@@ -171,7 +171,7 @@ ul li {
 }
 
 /* 編集画面 */
-.inner::before {
+.inner:before {
     position: absolute;
     content: '';
     width: 2em;
@@ -184,7 +184,7 @@ ul li {
     background-size: contain;
     background-repeat: no-repeat;
 }
-ul::after {
+ul:after {
     position: absolute;
     content: '';
     width: 3em;
@@ -196,6 +196,38 @@ ul::after {
     background-size: contain;
     background-repeat: no-repeat;
 }
-.button_toggle::before {
+.button_toggle:before {
     background-image: none;
+}
+
+/* グラフ画面 */
+#graph_area {
+  opacity: 1;
+}
+input.span_button {
+    width: 10%;
+    background-color: #EEE;
+    border-radius: 1.1em;
+    margin: 0 6px;
+    font-size: 1.1em;
+    font-weight: 200;
+}
+.chartjs-render-monitor {
+  -webkit-animation: chartjs-render-animation 0ms;
+  animation: chartjs-render-animation 0ms;
+}
+#prev_button {
+
+}
+#next_button {
+
+}
+#select_date {
+  font-size: 1.4em;
+  margin: 0 20px;
+}
+#select_today {
+  display: inline-block;
+  color: #2255aa;
+  margin: 5px 0;
 }

@@ -19,9 +19,15 @@
   </header>
   <main class="main">
     <section id="span_select">
-      <input type="button" value="日" onclick="selectedTerm(1)">
-      <input type="button" value="週" onclick="selectedTerm(2)">
-      <input type="button" value="月" onclick="selectedTerm(3)">
+      <div>
+        <input type="button" class="span_button" id="prev_button" value="＜" onclick="handlePrevDate()">
+        <span id="select_date"></span>
+        <input type="button" class="span_button" id="next_button" value="＞" onclick="handleNextDate()">
+      </div>
+      <span id="select_today" onclick="handleTodayDate()">今日</span>
+      <!-- <input type="button" class="span_button" value="日" onclick="selectedTerm(1)">
+      <input type="button" class="span_button" value="週" onclick="selectedTerm(2)">
+      <input type="button" class="span_button" value="月" onclick="selectedTerm(3)"> -->
     </section>
     <div>
       <canvas id="graph_area" width="400" height="400"></canvas>
