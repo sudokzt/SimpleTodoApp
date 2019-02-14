@@ -63,7 +63,8 @@ body {
 	height:auto;
 	line-height:4em;
 	background-color:#8000f0;
-	box-shadow:0px -1px 4px 0px #666;
+	-webkit-box-shadow:0px -1px 4px 0px #666;
+	        box-shadow:0px -1px 4px 0px #666;
 }
 #header h1 {
 	color:#FFF;
@@ -103,14 +104,23 @@ body {
   margin: 0 15%;
 }
 ul {
-    display: -webkit-flex;
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: space-between;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
     -webkit-justify-content: space-between;
-    -webkit-flex-wrap: wrap;
-    flex-wrap: wrap;
-    flex-direction: row;
-    align-items: center;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     padding: 2.5% 0;
 }
 ul li {
@@ -124,11 +134,13 @@ ul li {
     background-color: #eee;
     border-radius: 8px;
     border: 1px solid #ccc;
+    -webkit-transition: all 0.15s;
     transition: all 0.15s;
 }
 .slect_category {
     background-color: #f37777;
-    transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+            transform: scale(1.2);
 }
 .box-1x2:before {
     content: "";
@@ -136,9 +148,16 @@ ul li {
     padding-top: 35%;
 }
 .inner {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
     position: absolute;
     top: 0;
     left: 0;
@@ -151,8 +170,32 @@ ul li {
     letter-spacing: 1px;
 }
 
-#dumpAreaDatabase {
-  width: 100px;
-  height: 100px;
-  background-color: #ccc;
+/* 編集画面 */
+.inner::before {
+    position: absolute;
+    content: '';
+    width: 2em;
+    height: 2em;
+    top: -40%;
+    left: -15%;
+    border-radius: 50%;
+    background-image: url('../images/minus-circle-solid2.svg');
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+ul::after {
+    position: absolute;
+    content: '';
+    width: 3em;
+    height: 3em;
+    bottom: -10%;
+    right: 0%;
+    border-radius: 50%;
+    background-image: url('./../images/plus-circle-solid2.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.button_toggle::before {
+    background-image: none;
 }
