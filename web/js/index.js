@@ -43,9 +43,9 @@ document.addEventListener('DOMContentLoaded', function () {
 // アプリを再び開いた時
 window.onfocus = function () {
   // (SELECT) 最新のレコードを取得
-  getLatestRecord();
   // そのレコードが終了前の状態だったら
   // timerを 現在時間 - そのレコードの開始時間にして表示
+  getLatestRecord();
 }
 
 // ボタンを表示
@@ -138,14 +138,14 @@ addCategory = function () {
   let newCategory = window.prompt("カテゴリ名を入力してください", "");
   // (INSERT)カテゴリ挿入SQL
   if (newCategory !== null) {
-
+    handleAddCategory(newCategory);
   }
 }
 /* カテゴリの削除 */
 deleteCategory = function (id) {
   if (window.confirm("削除します")) { //カテゴリ削除確認ダイアログ
-    alert(`${id}を削除`)
     // (PUT)カテゴリ削除SQL
+    handleDeleteCategory(id);
   }
 }
 
