@@ -59,7 +59,7 @@ initializeCreateTable = function () {
   if (!is_OpenedDB()) return;
   //SQL配列の例 初期化
   const sqls = [
-    // categories　テーブル
+    // categories テーブル
     // "DROP TABLE IF EXISTS categories",
     "CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name letCHAR(50) NOT NULL, created_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), validated INT(1) NOT NULL DEFAULT '1')",
     "INSERT INTO categories (name) VALUES ('睡眠')",
@@ -72,7 +72,7 @@ initializeCreateTable = function () {
     "INSERT INTO categories (name) VALUES ('仕事')",
 
     // workd_recordsテーブル
-    "CREATE TABLE IF NOT EXISTS works_records (id INTEGER PRIMARY KEY, categories_id int(11) NOT NULL, started_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), finished_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), edited int(1) DEFAULT '0', validated INT(1) NOT NULL DEFAULT '1',FOREIGN KEY(categories_id) REFERENCES categories(id))"
+    "CREATE TABLE IF NOT EXISTS works_records (id INTEGER PRIMARY KEY, categories_id int(11) NOT NULL, started_at DATETIME NOT NULL DEFAULT (DATETIME('now','localtime')), finished_at DATETIME DEFAULT NULL, edited int(1) DEFAULT '0', validated INT(1) NOT NULL DEFAULT '1',FOREIGN KEY(categories_id) REFERENCES categories(id))"
   ];
   db.execTransaction(sqls, execTransactionSuccess, execTransactionError);
 }
@@ -93,7 +93,7 @@ execTransactionError = function (error) {
   alert(dump);
 }
 
-/* カテゴリー検索　*/
+/* カテゴリー検索 */
 // 全カテゴリーデータ
 getAllCategories = function (tag) {
   if (!is_OpenedDB()) return;
@@ -112,14 +112,12 @@ searchDataSuccess = function (result) {
   for (let i = 0; i < cnt; i++) {
     dump += "id:" + result.rows[i].id + ", data:" + result.rows[i].name + ", data2:" + result.rows[i].created_at + ", data3:" + result.rows[i].validated + "\n";
   }
-  // alert(dump);
   printButton(result);
 }
-/* 作業レコード検索　*/
+/* 作業レコード検索 */
 // term は 今日から何日前までかの期間
 getAllWorkRecords = function (term = DAYLY) {
   if (!is_OpenedDB()) return;
-  // alert(term);
   let sql;
   switch (term) {
     case DAYLY:
@@ -176,4 +174,23 @@ RecordWorkMoveEditSuccess = function () {
 RecordWorkSuccess = function (result) {
 }
 RecordWorkError = function (error) {
+}
+
+/* 最新のレコードを取得 */
+getLatestRecord = function () {
+  const sql = `SELECT * FROM works_records ORDER BY id DESC LIMIT 1`;
+  db.query(sql, getLatestRecordSuccess, getLatestRecordError);
+}
+getLatestRecordSuccess = function (result) {
+  if (result.rows[0].finished_at === null) {
+    let date = result.rows[0].started_at.replace(/-/g, '/');
+    let recordTime = new Date(date);
+    let currentTime = new Date();
+    let calc = new Date(+currentTime - recordTime);
+    startTimer(calc);
+  }
+}
+getLatestRecordError = function (error) {
+  alert(error);
+  alert("MISS")
 }
