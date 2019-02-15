@@ -99,9 +99,6 @@ getAllCategories = function (tag) {
   if (!is_OpenedDB()) return;
   const sql = "SELECT * FROM categories WHERE validated = 1";
   if (tag === "home") db.query(sql, searchDataSuccess, searchDataError); // 遷移元がホーム時はボタンを出力
-  // else {
-  //   db.query(sql, searchDataSuccess2, searchDataError); // 遷移元がグラフ時はグラフを出力
-  // }
 }
 
 /* カテゴリー検索 */
@@ -169,9 +166,10 @@ RecordWorkMoveGraphSuccess = function () {
   location.href = './graph.html';
 }
 RecordWorkMoveEditSuccess = function () {
-  location.href = './edit.html';
+  resetTimer();
 }
 RecordWorkSuccess = function (result) {
+  resetTimer();
 }
 RecordWorkError = function (error) {
 }
@@ -193,4 +191,29 @@ getLatestRecordSuccess = function (result) {
 getLatestRecordError = function (error) {
   alert(error);
   alert("MISS")
+}
+
+/* カテゴリー追加 */
+handleAddCategory = function (name) {
+  const sql = `INSERT INTO categories (name) VALUES("${name}")`;
+  db.query(sql, addCategorySuccess, addCategoryError);
+}
+addCategorySuccess = function (result) {
+  location.reload();
+}
+addCategoryError = function (error) {
+  alert(error);
+}
+
+/* カテゴリー削除 */
+handleDeleteCategory = function (id) {
+  alert(`入力idは${id}`);
+  const sql = `UPDATE categories SET validated = 0 WHERE id = ${id}`;
+  db.query(sql, deleteCategorySuccess, deleteCategoryError);
+}
+deleteCategorySuccess = function (result) {
+  location.reload();
+}
+deleteCategoryError = function (e) {
+  alert(e);
 }
