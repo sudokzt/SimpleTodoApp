@@ -207,7 +207,6 @@ addCategoryError = function (error) {
 
 /* カテゴリー削除 */
 handleDeleteCategory = function (id) {
-  alert(`入力idは${id}`);
   const sql = `UPDATE categories SET validated = 0 WHERE id = ${id}`;
   db.query(sql, deleteCategorySuccess, deleteCategoryError);
 }
