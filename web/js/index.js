@@ -26,6 +26,14 @@ document.addEventListener('DOMContentLoaded', function () {
   resetTimer();
 });
 
+// アプリを再び開いた時
+window.onfocus = function () {
+  // (SELECT) 最新のレコードを取得
+  getLatestRecord();
+  // そのレコードが終了前の状態だったら
+  // timerを 現在時間 - そのレコードの開始時間にして表示
+}
+
 // ボタンを表示
 printButton = function (categories) {
   const cnt = categories.rows.length; // カテゴリー数
@@ -87,11 +95,15 @@ resetTimer = function () {
 }
 // タイマー起動
 let timer;
-startTimer = function () {
-  const DAYSTART = new Date();
-  const DAYEND = new Date();
+startTimer = function (calc = null) {
   const INTERVAL = 1000;
-  let calc = new Date(+DAYEND - DAYSTART - INTERVAL);
+  if (calc === null) {
+    const DAYSTART = new Date();
+    const DAYEND = new Date();
+    calc = new Date(+DAYEND - DAYSTART - INTERVAL);
+  } else {
+    clearInterval(timer); // 再起動前に測っていた時間を初期化
+  }
   function counUpTimer() {
     const addZero = function (n) { return ('0' + n).slice(-2); }
     calc = new Date(+new Date(calc) + INTERVAL);
@@ -105,16 +117,6 @@ startTimer = function () {
   counUpTimer();
   timer = setInterval(function () { counUpTimer() }, INTERVAL);
 }
-
-// function dateToTime(date, format) {
-//   format = format.replace(/YYYY/, date.getFullYear());
-//   format = format.replace(/MM/, date.getMonth() + 1);
-//   format = format.replace(/DD/, date.getDate());
-//   return format;
-// }
-
-// console.log(sampleDate(new Date(), 'YYYY年MM月DD日'));
-
 /* イベント着火 */
 document.addEventListener("deviceready", function () {
   connectDatabase();
