@@ -169,9 +169,10 @@ RecordWorkMoveGraphSuccess = function () {
   location.href = './graph.html';
 }
 RecordWorkMoveEditSuccess = function () {
-  location.href = './edit.html';
+  resetTimer();
 }
 RecordWorkSuccess = function (result) {
+  resetTimer();
 }
 RecordWorkError = function (error) {
 }

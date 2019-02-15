@@ -20,7 +20,8 @@
     </div>
     <h1>自己管理</h1>
     <div class="right_button button">
-      <i class="fas fa-pencil-alt fa-2x" onclick="toEditScreen()"></i>
+      <i class="fas fa-pencil-alt fa-2x will_edit" onclick="toEditScreen('Edit')"></i>
+      <i class="done_edit" style="display: none" onclick="toEditScreen('Done')">完了</i>
     </div>
   </header>
 
@@ -30,11 +31,25 @@
     </section>
     <section class="todo_category">
       <ul>
-        <li class="adjust-box box-1x2" id="button_1" ontouchstart="" onclick="selectedButton(1)">
-          <div class="inner">
+        <li class="adjust-box box-1x2 category_button" id="button_1">
+          <div style="display: none" class="delete_mark"></div>
+          <div class="inner" ontouchstart="" onclick="selectedButton(1)">
             <p>睡眠</p>
           </div>
         </li>
+        <li class="adjust-box box-1x2 category_button" id="button_1" ontouchstart="" onclick="selectedButton(1)">
+          <div class="inner">
+            <div style="display: none" class="delete_mark"></div>
+            <p>睡眠</p>
+          </div>
+        </li>
+        <li class="adjust-box box-1x2 category_button" id="button_1" ontouchstart="" onclick="selectedButton(1)">
+          <div class="inner">
+            <div style="display: none" class="delete_mark"></div>
+            <p>睡眠</p>
+          </div>
+        </li>
+        <div style="display: none" id="add_mark" onclick="addCategory()"></div>
       </ul>
     </section>
   </main>

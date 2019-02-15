@@ -171,31 +171,32 @@ ul li {
 }
 
 /* 編集画面 */
-.inner:before {
+.delete_mark {
     position: absolute;
-    content: '';
     width: 2em;
     height: 2em;
     top: -40%;
     left: -15%;
     border-radius: 50%;
-    background-image: url('../images/minus-circle-solid2.svg');
-    display: inline-block;
+    background-image: url('./../images/minus-circle-solid.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
-ul:after {
+#add_mark {
     position: absolute;
-    content: '';
     width: 3em;
     height: 3em;
-    bottom: -10%;
+    bottom: -3em;
     right: 0%;
     border-radius: 50%;
-    background-image: url('./../images/plus-circle-solid2.svg');
+    background-image: url('./../images/plus-circle-solid.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
+.avoid-clicks {
+  pointer-events: none;
+}
+
 .button_toggle:before {
     background-image: none;
 }

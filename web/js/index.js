@@ -6,18 +6,32 @@ toGraphScreen = function () {
     location.href = './graph.html';
   }
 }
-toEditScreen = function () {
-  //(UPDATE) 最新の記録レコードを終了するSQL
-  let allButton = document.getElementsByClassName("inner");
-  alert(allButton[0]);
-  alert(allButton[0].className);
-  alert(allButton.length);
-  for (let i = 0; i < allButton.length; i++) {
-    allButton[i].classList.toggle("button_toggle");
-    // allButton[i].classList.toggle("button_toggle::before");
-  }
-  if (prevSelectedButton !== null) {
-    finishRecordWork("edit");
+/* 編集ボタンを押した時の挙動 */
+toEditScreen = function (type) {
+  let allButton = document.getElementsByClassName("category_button");
+  if (type === 'Edit') { // 記録画面から押した
+    document.getElementsByClassName('done_edit')[0].style.display = 'inline-block';
+    document.getElementsByClassName('will_edit')[0].style.display = 'none';
+    for (let i = 0; i < allButton.length; i++) {
+      document.getElementsByClassName('category_button')[i].classList.add('avoid-clicks'); // ボタンロック
+      document.getElementsByClassName('delete_mark')[i].style.display = 'block'; // 削除ボタン表示
+    }
+    document.getElementById('add_mark').style.display = 'block'; // 追加ボタン表示
+    //(UPDATE) 最新の記録レコードを終了するSQL
+    if (prevSelectedButton !== null) {
+      finishRecordWork();
+      // 選択していたボタンから色クラスを外す
+      document.getElementById(`button_${prevSelectedButton}`).classList.remove('slect_category');
+      prevSelectedButton = null;
+    }
+  } else { // 編集画面から押した
+    document.getElementsByClassName('done_edit')[0].style.display = 'none';
+    document.getElementsByClassName('will_edit')[0].style.display = 'inline-block';
+    for (let i = 0; i < allButton.length; i++) {
+      document.getElementsByClassName('category_button')[i].classList.remove('avoid-clicks'); // ボタンロック解除
+      document.getElementsByClassName('delete_mark')[i].style.display = 'none'; // 削除ボタン非表示
+    }
+    document.getElementById('add_mark').style.display = 'none'; // 追加ボタン非表示
   }
 }
 
@@ -47,8 +61,9 @@ printButton = function (categories) {
 // ボタンを作成
 createButton = function (id, name) {
   const buttonObj = `
-      <li class="adjust-box box-1x2" id="button_${id}" ontouchstart="" onclick="selectedButton(${id})">
-        <div class="inner">
+      <li class="adjust-box box-1x2" id="button_${id}">
+        <div class="delete_mark" style="display: none" onclick="deleteCategory(${id})"></div>
+        <div class="inner category_button" ontouchstart="" onclick="selectedButton(${id})">
           <p>${name}</p>
         </div>
       </li>`;
@@ -117,6 +132,23 @@ startTimer = function (calc = null) {
   counUpTimer();
   timer = setInterval(function () { counUpTimer() }, INTERVAL);
 }
+
+/* カテゴリの追加 */
+addCategory = function () {
+  let newCategory = window.prompt("カテゴリ名を入力してください", "");
+  // (INSERT)カテゴリ挿入SQL
+  if (newCategory !== null) {
+
+  }
+}
+/* カテゴリの削除 */
+deleteCategory = function (id) {
+  if (window.confirm("削除します")) { //カテゴリ削除確認ダイアログ
+    alert(`${id}を削除`)
+    // (PUT)カテゴリ削除SQL
+  }
+}
+
 /* イベント着火 */
 document.addEventListener("deviceready", function () {
   connectDatabase();
