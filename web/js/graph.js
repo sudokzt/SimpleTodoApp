@@ -68,11 +68,11 @@ var dataLabelPlugin = {
   }
 };
 
-printGraph = (function (result) {
+printGraph = function (result) {
 
   let dump = "以下のデータをグラフ化します\n";
-  // let cnt = result.rows.length;
-  let cnt = 0;
+  let cnt = result.rows.length;
+  // let cnt = 0;
   dump += "行数:" + cnt + "\n";
   let [data1, category1] = [[], []];
   for (let i = 0; i < cnt; i++) {
@@ -80,7 +80,7 @@ printGraph = (function (result) {
     data1.push(result.rows[i].elapsed_time);
     category1.push(result.rows[i].name);
   }
-  data1.push(10);
+  // data1.push(10);
   const ctx = document.getElementById("graph_area").getContext('2d');
   if (data1.length === 0) {
     ctx.font = "200 1.1em Noto Sans JP";
@@ -131,7 +131,7 @@ printGraph = (function (result) {
       plugins: [dataLabelPlugin],
     });
   }
-})()
+}
 
 // YYYY-MM-DDの形式にDate()型から変換
 convertDate = function (date, format) {
@@ -145,9 +145,12 @@ const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"];	// 曜�
 getDay = function (date) {
   return dayOfWeekStr[date.getDay()]
 }
-// 現在表示している日付を取得
+// 現在表示している日付を取得後Date型として返す
 getPrintingDate = function () {
-  return new Date(document.getElementById("select_date").innerHTML);
+  let printingDate = document.getElementById("select_date").innerText; // 表示しているを取得
+  printingDate = printingDate.substr(0, printingDate.length - 3); // 曜日部分を削除
+  printingDate = printingDate.replace(/-/g, '/'); // '-' を '/' に変換
+  return new Date(printingDate);
 }
 // ロード時の日付を表示
 handleTodayDate = function () {
