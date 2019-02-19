@@ -6,6 +6,7 @@ toHomeScreen = function () {
 // ホーム画面ロード時
 document.addEventListener('DOMContentLoaded', function () {
   handleTodayDate();
+  printGraph();
 });
 
 // 期間選択
@@ -69,75 +70,68 @@ var dataLabelPlugin = {
 };
 
 printGraph = function (result) {
-
-  let dump = "以下のデータをグラフ化します\n";
   let cnt = result.rows.length;
-  // let cnt = 0;
-  dump += "行数:" + cnt + "\n";
-  let [data1, category1] = [[], []];
+  let [data, category] = [[], []];
   for (let i = 0; i < cnt; i++) {
-    dump += `elapsed_time: ${result.rows[i].elapsed_time}  \n category: ${result.rows[i].categories_id} \n name: ${result.rows[i].name}  \n `;
-    data1.push(result.rows[i].elapsed_time);
-    category1.push(result.rows[i].name);
+    data.push(result.rows[i].elapsed_time);
+    category.push(result.rows[i].name);
   }
-  // data1.push(10);
   const ctx = document.getElementById("graph_area").getContext('2d');
-  if (data1.length === 0) {
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: category,
+      datasets: [{
+        backgroundColor: [
+          "#2ecc71",
+          "#95a5a6",
+          "#9b59b6",
+          "#f1c40f",
+          "#3498db",
+          "#e74c3c",
+          "#34495e",
+          "#200c71",
+          "#050036",
+          "#9b5b00",
+          "#0fc4ff",
+          "#3f983b",
+          "#ddff3c",
+          "#0f3033",
+          "#2ecc71",
+          "#95a5a6",
+          "#9b59b6",
+          "#f1c40f",
+          "#3498db",
+          "#e74c3c",
+          "#34495e",
+          "#200c71",
+          "#050036",
+          "#9b5b00",
+          "#0fc4ff",
+          "#3f983b",
+          "#ddff3c",
+          "#0f3033",
+        ],
+        data: data
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+    },
+    plugins: [dataLabelPlugin],
+  });
+  if (data.length === 0) { // レコードが０件だったら
     ctx.font = "200 1.1em Noto Sans JP";
     ctx.textAlign = 'end';
     ctx.fillText('データがありません', 200, 100);
-  } else {
-    new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: category1,
-        datasets: [{
-          backgroundColor: [
-            "#2ecc71",
-            "#95a5a6",
-            "#9b59b6",
-            "#f1c40f",
-            "#3498db",
-            "#e74c3c",
-            "#34495e",
-            "#200c71",
-            "#050036",
-            "#9b5b00",
-            "#0fc4ff",
-            "#3f983b",
-            "#ddff3c",
-            "#0f3033",
-            "#2ecc71",
-            "#95a5a6",
-            "#9b59b6",
-            "#f1c40f",
-            "#3498db",
-            "#e74c3c",
-            "#34495e",
-            "#200c71",
-            "#050036",
-            "#9b5b00",
-            "#0fc4ff",
-            "#3f983b",
-            "#ddff3c",
-            "#0f3033",
-          ],
-          data: data1
-        }]
-      },
-      options: {
-        maintainAspectRatio: false,
-      },
-      plugins: [dataLabelPlugin],
-    });
   }
 }
 
 // YYYY-MM-DDの形式にDate()型から変換
 convertDate = function (date, format) {
   format = format.replace(/YYYY/, date.getFullYear());
-  format = format.replace(/MM/, date.getMonth() + 1);
-  format = format.replace(/DD/, date.getDate());
+  format = format.replace(/MM/, ("0" + (date.getMonth() + 1)).slice(-2)); //２桁表示
+  format = format.replace(/DD/, ("0" + date.getDate()).slice(-2)); //２桁表示
   return format;
 }
 // その日の曜日を返す
@@ -153,8 +147,11 @@ getPrintingDate = function () {
   return new Date(printingDate);
 }
 // ロード時の日付を表示
-handleTodayDate = function () {
+handleTodayDate = function (type = 'initialize') {
   const day = getDay(new Date());
+  if (type === 'click') {
+    getAllWorkRecords();
+  }
   document.getElementById("select_date").innerText = convertDate(new Date(), `YYYY-MM-DD(${day})`);
 }
 // 1日前の日付を表示
@@ -162,14 +159,23 @@ handlePrevDate = function () {
   let printingDate = getPrintingDate();
   printingDate.setDate(printingDate.getDate() - 1); // 1日前
   const day = getDay(printingDate);
-  document.getElementById("select_date").innerText = convertDate(printingDate, `YYYY-MM-DD(${day})`);
+  let prevDate = convertDate(printingDate, 'YYYY-MM-DD');
+  document.getElementById("select_date").innerText = `${prevDate}(${day})`;
+  handleGetWorkRecord(prevDate);
 }
 // 1日後の日付を表示
 handleNextDate = function () {
   let printingDate = getPrintingDate();
   printingDate.setDate(printingDate.getDate() + 1); // 1日後
   const day = getDay(printingDate);
-  document.getElementById("select_date").innerText = convertDate(printingDate, `YYYY-MM-DD(${day})`);
+  let nextDate = convertDate(printingDate, 'YYYY-MM-DD');
+  document.getElementById("select_date").innerText = `${nextDate}(${day})`;
+  handleGetWorkRecord(nextDate);
+}
+// 該当日付のレコード取得
+handleGetWorkRecord = function (date) {
+  date = date.replace(/-/g, '/'); // '-' を '/' に変換
+  getAllWorkRecords(date)
 }
 
 /* イベント着火 */

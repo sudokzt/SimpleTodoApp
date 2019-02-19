@@ -15,6 +15,9 @@ body {
   font-size: 1.2rem;
    font-family: Lato, "Noto Sans JP", "游ゴシック Medium", "游ゴシック体", "Yu Gothic Medium", YuGothic, "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
   text-align: center;
+  background-color: #eee;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  tap-highlight-color: rgba(0, 0, 0, 0);
 }
 @media (max-width: 1080px) {
   .history {
@@ -62,13 +65,14 @@ body {
 	width:100%;
 	height:auto;
 	line-height:4em;
-	background-color:#8000f0;
+	background-color: #008080;
 	-webkit-box-shadow:0px -1px 4px 0px #666;
 	        box-shadow:0px -1px 4px 0px #666;
 }
 #header h1 {
 	color:#FFF;
-	font-size: 1.7em;
+  font-size: 1.7em;
+  font-weight: 300;
 }
 #header .button {
   position:absolute;
@@ -85,6 +89,11 @@ body {
 	height:100%;
 	color:#EEE;
 }
+.done_edit {
+  font-size: 1.3em;
+  font-style: normal;
+  position: relative;
+}
 
 /* メインメニュー */
 .main {
@@ -96,7 +105,8 @@ body {
 #elapsed_time {
   letter-spacing: calc(0.2em + 1px);
   font-size: 3em;
-  text-decoration: underline;
+  /* text-decoration: underline; */
+  font-weight: 100;
 }
 
 /* 各ボタン */
@@ -202,33 +212,15 @@ ul li {
 }
 
 /* グラフ画面 */
-#graph_area {
-  opacity: 1;
-}
-input.span_button {
-    width: 10%;
-    background-color: #EEE;
-    border-radius: 1.1em;
-    margin: 0 6px;
-    font-size: 1.1em;
-    font-weight: 200;
-}
-.chartjs-render-monitor {
-  -webkit-animation: chartjs-render-animation 0ms;
-  animation: chartjs-render-animation 0ms;
-}
-#prev_button {
-
-}
-#next_button {
-
+.span_button {
+  font-size: 1.35em;
 }
 #select_date {
-  font-size: 1.4em;
+  font-size: 1.5em;
   margin: 0 20px;
 }
 #select_today {
   display: inline-block;
   color: #2255aa;
-  margin: 5px 0;
+  margin: 8px 0;
 }

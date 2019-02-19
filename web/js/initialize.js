@@ -113,24 +113,24 @@ searchDataSuccess = function (result) {
 }
 /* 作業レコード検索 */
 // term は 今日から何日前までかの期間
-getAllWorkRecords = function (term = DAYLY) {
+getAllWorkRecords = function (term = null) {
   if (!is_OpenedDB()) return;
   let sql;
-  switch (term) {
-    case DAYLY:
-      sql = `SELECT WR.categories_id, C.id, C.name AS name, C.validated AS v1, WR.validated AS v2, SUM(strftime('%s', WR.finished_at) - strftime('%s', WR.started_at)) AS elapsed_time FROM works_records AS WR INNER JOIN categories AS C ON WR.categories_id = C.id WHERE v1 = 1 AND v2 = 1 GROUP BY WR.categories_id`;
-      break;
-    case WEEKLY:
-      sql = "SELECT * FROM works_records WHERE validated = 1";
-      break;
-    case MONTHLY:
-      sql = "SELECT * FROM works_records WHERE validated = 1";
-      break;
-    default:
-      alert("error!");
-      break;
+  // 今日
+  if (term === null) {
+    let today = new Date(); // 今日
+    let tommorow = today;
+    today = convertDate(today, `YYYY-MM-DD`);
+    tommorow.setDate(tommorow.getDate() + 1); // 明日
+    tommorow = convertDate(tommorow, `YYYY-MM-DD`);
+    sql = `SELECT WR.categories_id, C.id, C.name AS name, C.validated AS v1, WR.validated AS v2, WR.finished_at AS finished_at,SUM(strftime('%s', WR.finished_at) - strftime('%s', WR.started_at)) AS elapsed_time FROM works_records AS WR INNER JOIN categories AS C ON WR.categories_id = C.id WHERE v1 = 1 AND v2 = 1 AND finished_at BETWEEN '${today} 00:00:00' AND '${tommorow} 00:00:00' GROUP BY WR.categories_id`;
+  } else {
+    endTerm = new Date(term);
+    endTerm.setDate(endTerm.getDate() + 1);
+    term = term.replace(/\u002f/g, '-'); // '/' を '-' に変換
+    endTerm = convertDate(endTerm, 'YYYY-MM-DD');
+    sql = `SELECT WR.categories_id, C.id, C.name AS name, C.validated AS v1, WR.validated AS v2, WR.finished_at AS finished_at,SUM(strftime('%s', WR.finished_at) - strftime('%s', WR.started_at)) AS elapsed_time FROM works_records AS WR INNER JOIN categories AS C ON WR.categories_id = C.id WHERE v1 = 1 AND v2 = 1 AND finished_at BETWEEN '${term} 00:00:00' AND '${endTerm} 00:00:00' GROUP BY WR.categories_id`;
   }
-  // alert(sql);
   db.query(sql, searchDataSuccess2, searchDataError);
 }
 searchDataSuccess2 = function (result) {
