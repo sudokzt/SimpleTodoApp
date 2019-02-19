@@ -120,11 +120,11 @@ printGraph = function (result) {
     },
     plugins: [dataLabelPlugin],
   });
-  if (data.length === 0) { // レコードが０件だったら
-    ctx.font = "200 1.1em Noto Sans JP";
-    ctx.textAlign = 'end';
-    ctx.fillText('データがありません', 200, 100);
-  }
+  // if (data.length === 0) { // レコードが０件だったら
+  //   ctx.font = "200 1.1em Noto Sans JP";
+  //   ctx.textAlign = 'end';
+  //   ctx.fillText('データがありません', 200, 100);
+  // }
 }
 
 // YYYY-MM-DDの形式にDate()型から変換

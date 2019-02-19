@@ -32,19 +32,19 @@
 	<property name="NATIVE_TAB_URL4"></property>
 	<property name="NATIVE_TAB_URL5"></property>
 
-	<property name="NAVIGATION_BAR">true</property>
+	<property name="NAVIGATION_BAR">false</property>
 
-	<property name="PULL_TO_REFRESH">true</property>
+	<property name="PULL_TO_REFRESH">false</property>
 
 	<property name="RESUME_RELOAD">false</property>
 
-	<property name="SCREEN_ORIENTATION_LANDSCAPE">true</property>
+	<property name="SCREEN_ORIENTATION_LANDSCAPE">false</property>
 	<property name="SCREEN_ORIENTATION_PORTRAIT">true</property>
 
 	<property name="STATUS_BAR">true</property>
 
 	<property name="WEBVIEW_BOUNCES">true</property>
-	<property name="WEBVIEW_BACK">true</property>
+	<property name="WEBVIEW_BACK">false</property>
 	<property name="WEBVIEW_HARDWARE_BACK_BUTTON">false</property>
 	<property name="WEBVIEW_USER_AGENT"></property>
 </applican-configuration>
